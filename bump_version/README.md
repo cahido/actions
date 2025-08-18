@@ -22,15 +22,27 @@ This action automatically handles semantic versioning for Python projects using 
 | `git_user_name` | Git user.name to use for commits | No | `"github-actions[bot]"` |
 | `git_user_email` | Git user.email to use for commits | No | `"github-actions[bot]@users.noreply.github.com"` |
 
+## Outputs
+
+| Output | Description |
+|--------|-------------|
+| `version` | The new version after bump (e.g., `1.2.3`) |
+
 ## Usage
 
 ```yaml
 - name: Bump version
+  id: version_bump
   uses: ./.github/actions/bump_version
   with:
     bump: 'minor'  # or 'patch', 'major'
     git_user_name: 'Your Name'
     git_user_email: 'your.email@example.com'
+
+- name: Use new version
+  run: |
+    echo "New version: ${{ steps.version_bump.outputs.version }}"
+    # You can use this version for further steps like creating releases, updating documentation, etc.
 ```
 
 ## Requirements

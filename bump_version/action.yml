@@ -17,6 +17,11 @@ inputs:
     required: false
     default: "github-actions[bot]@users.noreply.github.com"
 
+outputs:
+  version:
+    description: "The new version after bump"
+    value: ${{ steps.bump.outputs.version }}
+
 runs:
   using: "composite"
   steps:
