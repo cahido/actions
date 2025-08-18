@@ -1,0 +1,48 @@
+name: "Publish Docker Image to ECR"
+description: |
+  Build and push Docker image to Amazon ECR.
+
+  The ECR repository must allow the latest tag to be overwritten.
+  This action must be preceded by a checkout step.
+  This action requires the calling workflow to have the following permissions:
+    - id-token: write
+
+inputs:
+  image_name:
+    description: "De naam van de Docker image"
+    required: true
+  aws_region:
+    description: "AWS regio"
+    required: true
+  aws_role_arn:
+    description: "ARN van de IAM role om te assumen"
+    required: true
+  image_tag:
+    description: "Tag voor de Docker image"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.aws_role_arn }}
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_name }}:${{ inputs.image_tag }}
+          ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_name }}:latest
+        cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_name }}:latest

@@ -1,0 +1,62 @@
+name: "Poetry Version Bump"
+description: Bump Poetry version, commit, and tag
+
+inputs:
+  bump:
+    description: "Which bump to apply (patch, minor, major)"
+    required: true
+    default: "patch"
+
+  git_user_name:
+    description: "Git user.name to use for commits"
+    required: false
+    default: "github-actions[bot]"
+
+  git_user_email:
+    description: "Git user.email to use for commits"
+    required: false
+    default: "github-actions[bot]@users.noreply.github.com"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check if last commit was a version bump
+      id: last
+      shell: bash
+      run: |
+        LAST_MSG=$(git log -1 --pretty=%B)
+        echo "Last commit message: $LAST_MSG"
+        if [[ "$LAST_MSG" =~ ^Bump\ version\ to ]]; then
+          echo "skip=true" >> $GITHUB_OUTPUT
+        else
+          echo "skip=false" >> $GITHUB_OUTPUT
+
+    - name: Stop if last commit was bump
+      if: steps.last.outputs.skip == 'true'
+      shell: bash
+      run: |
+        echo "Last commit was a version bump, skipping."
+        exit 0
+
+    - name: Install Poetry
+      shell: bash
+      run: pip install poetry
+
+    - name: Bump version
+      id: bump
+      shell: bash
+      run: |
+        poetry version ${{ inputs.bump }}
+        VERSION=$(poetry version -s)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Commit and tag
+      shell: bash
+      run: |
+        VERSION=${{ steps.bump.outputs.version }}
+        git config user.name "${{ inputs.git_user_name }}"
+        git config user.email "${{ inputs.git_user_email }}"
+        git add pyproject.toml
+        git commit -m "Bump version to $VERSION"
+        git tag "v$VERSION"
+        git push origin HEAD --tags

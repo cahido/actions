@@ -1,0 +1,36 @@
+name: "Check code"
+description: "Installeer dependencies en run linting en tests"
+inputs:
+  python-version:
+    description: "Python versie"
+    default: "3.11"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      run: |
+        pip install poetry
+        poetry install
+      shell: bash
+
+    - name: Ruff (lint)
+      run: poetry run ruff check .
+      shell: bash
+
+    - name: Black (format check)
+      run: poetry run black --check .
+      shell: bash
+
+    - name: Mypy (type check)
+      run: poetry run mypy .
+      shell: bash
+
+    - name: Run pytest
+      run: poetry run pytest
+      shell: bash
