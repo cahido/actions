@@ -15,10 +15,16 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
+    - name: Install poetry
+      run: pip install poetry
+      shell: bash
+
+    - name: Verify lockfile is up to date
+      run: poetry lock --check
+      shell: bash
+
     - name: Install dependencies
-      run: |
-        pip install poetry
-        poetry install
+      run: poetry install --no-interaction --no-ansi
       shell: bash
 
     - name: Ruff (lint)
