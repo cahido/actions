@@ -18,7 +18,7 @@ Build and push Docker images to Amazon ECR.
 Reference these actions in your workflows using:
 
 ```yaml
-- uses: cahido/actions/actions/[action_name]@main
+- uses: cahido/actions/[action_name]@main
 ```
 
 Each action has its own README with detailed usage instructions and examples.
