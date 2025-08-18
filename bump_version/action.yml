@@ -32,9 +32,9 @@ runs:
         LAST_MSG=$(git log -1 --pretty=%B)
         echo "Last commit message: $LAST_MSG"
         if echo "$LAST_MSG" | grep -q "^Bump version to"; then
-          echo "bump=true" >> $GITHUB_OUTPUT
-        else
           echo "bump=false" >> $GITHUB_OUTPUT
+        else
+          echo "bump=true" >> $GITHUB_OUTPUT
         fi
 
     - name: Install Poetry
