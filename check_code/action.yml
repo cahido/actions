@@ -13,7 +13,7 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ github.event.inputs.python-version }}
+        python-version: ${{ inputs.python-version }}
 
     - name: Install dependencies
       run: |
