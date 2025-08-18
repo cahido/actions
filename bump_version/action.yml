@@ -32,23 +32,18 @@ runs:
         LAST_MSG=$(git log -1 --pretty=%B)
         echo "Last commit message: $LAST_MSG"
         if echo "$LAST_MSG" | grep -q "^Bump version to"; then
-          echo "skip=true" >> $GITHUB_OUTPUT
+          echo "bump=true" >> $GITHUB_OUTPUT
         else
-          echo "skip=false" >> $GITHUB_OUTPUT
+          echo "bump=false" >> $GITHUB_OUTPUT
         fi
 
-    - name: Stop if last commit was bump
-      if: steps.last.outputs.skip == 'true'
-      shell: bash
-      run: |
-        echo "Last commit was a version bump, skipping."
-        exit 0
-
     - name: Install Poetry
+      if: steps.last.outputs.bump == 'true'
       shell: bash
       run: pip install poetry
 
     - name: Bump version
+      if: steps.last.outputs.bump == 'true'
       id: bump
       shell: bash
       run: |
@@ -57,6 +52,7 @@ runs:
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Commit and tag
+      if: steps.last.outputs.bump == 'true'
       shell: bash
       run: |
         VERSION=${{ steps.bump.outputs.version }}
