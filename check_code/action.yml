@@ -9,6 +9,7 @@ runs:
       run: |
         VERSION=$(grep "^python" pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+)".*/\1/')
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+      shell: bash
         
     - name: Set up Python
       uses: actions/setup-python@v5
