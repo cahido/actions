@@ -1,20 +1,19 @@
 name: "Check code"
 description: "Installeer dependencies en run linting en tests"
 
+inputs:
+  python-version:
+    description: "Python versie"
+    required: true
+
 runs:
   using: "composite"
   steps:
-    - name: Read Python version from pyproject.toml
-      id: py
-      run: |
-        VERSION=$(grep "^python" pyproject.toml | sed -E 's/.*"([0-9]+\.[0-9]+)".*/\1/')
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-      shell: bash
         
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ steps.py.outputs.version }}
+        python-version: ${{ github.event.inputs.python-version }}
 
     - name: Install dependencies
       run: |
