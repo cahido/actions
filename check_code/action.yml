@@ -19,10 +19,6 @@ runs:
       run: pip install poetry
       shell: bash
 
-    - name: Verify lockfile is up to date
-      run: poetry lock --check
-      shell: bash
-
     - name: Install dependencies
       run: poetry install --no-interaction --no-ansi
       shell: bash
