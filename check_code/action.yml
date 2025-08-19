@@ -23,18 +23,27 @@ runs:
       run: poetry install --no-interaction --no-ansi
       shell: bash
 
-    - name: Ruff (lint)
+    # Commit message convention
+    - name: commitizen
+      run: poetry run cz check
+      shell: bash
+
+    # Linting
+    - name: Ruff
       run: poetry run ruff check .
       shell: bash
 
-    - name: Black (format check)
+    # Code formatting
+    - name: Black
       run: poetry run black --check .
       shell: bash
 
-    - name: Mypy (type check)
+    # Type checking
+    - name: Mypy
       run: poetry run mypy .
       shell: bash
 
-    - name: Run pytest
+    # Testing
+    - name: Pytest
       run: poetry run pytest
       shell: bash
