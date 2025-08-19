@@ -60,6 +60,14 @@ This action automatically handles semantic versioning for Python projects based 
 ## Requirements
 
 - Python project with Poetry configuration (`pyproject.toml`)
+- Poetry configuration must contain settings for semantic release
+
+```toml
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+commit_message = "chore(release): {version}"
+```
+
 - Repository with write permissions
 - The calling workflow must have `contents: write` permission
 - **Important**: Checkout must be done with full git history (`fetch-depth: 0`)
