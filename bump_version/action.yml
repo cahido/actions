@@ -44,7 +44,7 @@ runs:
         GH_TOKEN: ${{ inputs.github_token }}
       run: |
         if semantic-release publish; then
-          VERSION=$(semantic-release print-version)
+          VERSION=$(semantic-release version)
           echo "released=true" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
         else
