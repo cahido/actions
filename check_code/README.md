@@ -21,7 +21,8 @@ This action sets up a Python environment, installs project dependencies using Po
 | Input | Description | Required | Default |
 |-------|-------------|----------|---------|
 | `python-version` | Python version to use | Yes | None |
-| `branch` | The git branch that commitizen checks against | No | `"main"` |
+| `first-commit-sha` | SHA of the first commit to include in message linting | Yes | None |
+
 
 ## Usage
 
@@ -30,7 +31,7 @@ This action sets up a Python environment, installs project dependencies using Po
   uses: ./.github/actions/check_code
   with:
     python-version: '3.11'
-    branch: 'main'  # Optional, defaults to 'main'
+    first-commit-sha: 'abc123def456'  # SHA of the first commit to check
 ```
 
 ## Requirements
@@ -47,7 +48,7 @@ This action sets up a Python environment, installs project dependencies using Po
 
 1. **Python setup**: Installs the specified Python version
 2. **Dependencies**: Installs Poetry and project dependencies
-3. **Commit validation**: Runs `cz check --rev-range [branch]..HEAD` to validate commit message conventions
+3. **Commit validation**: Runs `cz check --rev-range [first-commit-sha]..HEAD` to validate commit message conventions
 4. **Linting**: Runs `ruff check .` to validate code style and catch potential issues
 5. **Formatting**: Runs `black --check .` to ensure consistent code formatting
 6. **Type checking**: Runs `mypy .` to verify type annotations
@@ -77,11 +78,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for commit message checking
       
       - name: Run code quality checks
         uses: ./.github/actions/check_code
         with:
           python-version: '3.11'
+          first-commit-sha: 378bd0556d35c0a1dbcbca95eac70186a6d275af
 ```
 
 ## Failure behavior
@@ -92,11 +96,3 @@ The action will fail if any of the following tools report issues:
 - Black detects formatting inconsistencies
 - Mypy discovers type errors
 - pytest encounters test failures
-
-## Local development
-
-Test locally with act:
-
-```bash
-act -j test
-```

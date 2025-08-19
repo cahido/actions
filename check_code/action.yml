@@ -5,10 +5,9 @@ inputs:
   python-version:
     description: "Python versie"
     required: true
-  from_ref:
-    description: "Git ref (tag/branch/commit) vanaf waar commitizen de commits controleert"
-    required: false
-    default: "main"
+  first-commit-sha:
+    description: "SHA van de eerste commit met message linting"
+    required: true
 
 runs:
   using: "composite"
@@ -29,7 +28,7 @@ runs:
 
     # Commit message convention
     - name: commitizen
-      run: poetry run cz check --rev-range ${{ inputs.from_ref }}..HEAD
+      run: poetry run cz check --rev-range ${{ inputs.first-commit-sha }}..HEAD
       shell: bash
 
     # Linting
