@@ -5,6 +5,10 @@ inputs:
   python-version:
     description: "Python versie"
     required: true
+  from_ref:
+    description: "Git ref (tag/branch/commit) vanaf waar commitizen de commits controleert"
+    required: false
+    default: "main"
 
 runs:
   using: "composite"
@@ -25,7 +29,7 @@ runs:
 
     # Commit message convention
     - name: commitizen
-      run: poetry run cz check
+      run: poetry run cz check --rev-range ${{ inputs.from_ref }}..HEAD
       shell: bash
 
     # Linting

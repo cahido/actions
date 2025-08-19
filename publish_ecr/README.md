@@ -27,7 +27,7 @@ This action builds a Docker image from the current repository context and publis
 
 ```yaml
 - name: Publish Docker image
-  uses: ./.github/actions/publish_image
+  uses: ./.github/actions/publish_ecr
   with:
     image_name: 'my-app'
     aws_region: 'eu-central-1'
@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Publish to ECR
-        uses: ./.github/actions/publish_image
+        uses: ./.github/actions/publish_ecr
         with:
           image_name: 'my-application'
           aws_region: 'eu-central-1'

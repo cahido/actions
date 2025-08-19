@@ -5,13 +5,13 @@ A collection of reusable GitHub Actions for common development workflows.
 ## Available Actions
 
 ### 🔄 bump_version
-Automatically bump Poetry version, commit changes, and create git tags.
+Automatically bump versions using commit messages with python-semantic-release. Analyzes conventional commits to determine version bumps and creates git tags.
 
 ### ✅ check_code
-Install dependencies and run linting and tests for Python projects.
+Install dependencies and run comprehensive code quality checks including commit message validation, linting, formatting, type checking, and tests for Python projects.
 
-### 🐳 publish_image
-Build and push Docker images to Amazon ECR.
+### 🐳 publish_ecr
+Build and push Docker images to Amazon ECR with caching and OIDC authentication.
 
 ## Usage
 
