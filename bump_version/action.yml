@@ -13,8 +13,11 @@ inputs:
     default: "github-actions[bot]@users.noreply.github.com"
 
 outputs:
+  released:
+    description: "Whether a new release was created (e.g., true or false)"
+    value: ${{ steps.semantic.outputs.released }}
   version:
-    description: "The new version after bump (e.g., 1.2.3)"
+    description: "The latest version (e.g., 1.2.3)"
     value: ${{ steps.semantic.outputs.version }}
 
 runs:
@@ -38,8 +41,10 @@ runs:
       run: |
         if semantic-release publish; then
           VERSION=$(semantic-release print-version)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "released=true" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
         else
+          CURRENT_VERSION=$(poetry version -s)
           echo "released=false" >> $GITHUB_OUTPUT
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         fi
