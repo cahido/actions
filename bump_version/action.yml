@@ -2,6 +2,10 @@ name: "Semantic Release"
 description: "Automatically bump version using commit messages, update pyproject.toml, commit, and tag"
 
 inputs:
+  github_token:
+    description: "GitHub token for pushing commits/tags"
+    required: true
+
   git_user_name:
     description: "Git user.name to use for commits"
     required: false
@@ -37,7 +41,7 @@ runs:
       id: semantic
       shell: bash
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.github_token }}
       run: |
         if semantic-release publish; then
           VERSION=$(semantic-release print-version)
