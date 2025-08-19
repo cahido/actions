@@ -1,11 +1,5 @@
 name: "Publish Docker Image to ECR"
-description: |
-  Build and push Docker image to Amazon ECR.
-
-  The ECR repository must allow the latest tag to be overwritten.
-  This action must be preceded by a checkout step.
-  This action requires the calling workflow to have the following permissions:
-    - id-token: write
+description: "Build and push Docker image to Amazon ECR."
 
 inputs:
   image_name:

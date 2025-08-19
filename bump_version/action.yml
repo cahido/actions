@@ -1,12 +1,7 @@
-name: "Poetry Version Bump"
-description: Bump Poetry version, commit, and tag
+name: "Semantic Release"
+description: "Automatically bump version using commit messages, update pyproject.toml, commit, and tag"
 
 inputs:
-  bump:
-    description: "Which bump to apply (patch, minor, major)"
-    required: true
-    default: "patch"
-
   git_user_name:
     description: "Git user.name to use for commits"
     required: false
@@ -19,46 +14,32 @@ inputs:
 
 outputs:
   version:
-    description: "The new version after bump"
-    value: ${{ steps.bump.outputs.version }}
+    description: "The new version after bump (e.g., 1.2.3)"
+    value: ${{ steps.semantic.outputs.version }}
 
 runs:
   using: "composite"
   steps:
-    - name: Check if last commit was a version bump
-      id: last
+    - name: Set up git user
       shell: bash
       run: |
-        LAST_MSG=$(git log -1 --pretty=%B)
-        echo "Last commit message: $LAST_MSG"
-        if echo "$LAST_MSG" | grep -q "^Bump version to"; then
-          echo "bump=false" >> $GITHUB_OUTPUT
-        else
-          echo "bump=true" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Install Poetry
-      if: steps.last.outputs.bump == 'true'
-      shell: bash
-      run: pip install poetry
-
-    - name: Bump version
-      if: steps.last.outputs.bump == 'true'
-      id: bump
-      shell: bash
-      run: |
-        poetry version ${{ inputs.bump }}
-        VERSION=$(poetry version -s)
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-    - name: Commit and tag
-      if: steps.last.outputs.bump == 'true'
-      shell: bash
-      run: |
-        VERSION=${{ steps.bump.outputs.version }}
         git config user.name "${{ inputs.git_user_name }}"
         git config user.email "${{ inputs.git_user_email }}"
-        git add pyproject.toml
-        git commit -m "Bump version to $VERSION"
-        git tag "v$VERSION"
-        git push origin HEAD --tags
+
+    - name: Install Python Semantic Release
+      shell: bash
+      run: pip install python-semantic-release
+
+    - name: Run semantic-release
+      id: semantic
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        if semantic-release publish; then
+          VERSION=$(semantic-release print-version)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "released=true" >> $GITHUB_OUTPUT
+        else
+          echo "released=false" >> $GITHUB_OUTPUT
+        fi
