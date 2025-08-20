@@ -32,4 +32,4 @@ runs:
 
     - name: Install Project
       shell: bash
-      run: poetry install --no-interaction --no-ansi
+      run: poetry install --no-interaction --no-ansi --all-extras
