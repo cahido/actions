@@ -1,0 +1,35 @@
+name: Setup Python with Poetry
+description: Sets up Python, installs Poetry, and installs project dependencies
+
+inputs:
+  python-version:
+    description: "Python versie"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Poetry
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pypoetry
+          ~/.cache/pip
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-poetry-
+
+    - name: Install Project
+      shell: bash
+      run: poetry install --no-interaction --no-ansi
