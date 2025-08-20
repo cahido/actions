@@ -27,7 +27,9 @@ jobs:
           token: ${{ secrets.CI_PAT || github.token }}
 
       - name: Setup Python & Poetry
-        uses: ./setup_python_poetry
+        uses: cahido/actions/setup_python_poetry@main
+        with:
+          python-version: ${{ inputs.python-version }}
 
       - name: Check code formatting
         run: devtools lint check
@@ -44,7 +46,10 @@ jobs:
           token: ${{ secrets.CI_PAT || github.token }}
 
       - name: Setup Python & Poetry
-        uses: ./setup_python_poetry
+        uses: cahido/actions/setup_python_poetry@main
+        with:
+          python-version: ${{ inputs.python-version }}
+
 
       - name: Run tests
         run: poetry run pytest
