@@ -32,7 +32,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Check code formatting
-        run: devtools lint check
+        run: poetry run devtools lint check
 
   test:
     name: Python Tests
