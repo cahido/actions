@@ -1,0 +1,50 @@
+name: "Lint and test"
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: false
+        type: string
+        default: "3.12"
+    secrets:
+      CI_PAT:
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: Setup Python & Poetry
+        uses: ./setup_python_poetry
+
+      - name: Check code formatting
+        run: devtools lint check
+
+  test:
+    name: Python Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.CI_PAT }}
+
+      - name: Setup Python & Poetry
+        uses: ./setup_python_poetry
+
+      - name: Run tests
+        run: poetry run pytest
