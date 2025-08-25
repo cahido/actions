@@ -40,3 +40,5 @@ runs:
           ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_name }}:${{ inputs.image_tag }}
           ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_name }}:latest
         cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_name }}:latest
+        build-args: |
+          IMAGE_TAG=${{ inputs.image_tag }}
