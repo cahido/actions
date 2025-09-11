@@ -34,6 +34,9 @@ jobs:
       - name: Check code formatting
         run: poetry run devtools lint check
 
+      - name: Check typing
+        run: poetry run devtools typecheck
+
   test:
     name: Python Tests
     runs-on: ubuntu-latest
@@ -49,7 +52,6 @@ jobs:
         uses: cahido/actions/setup_python_poetry@main
         with:
           python-version: ${{ inputs.python-version }}
-
 
       - name: Run tests
         run: poetry run pytest
