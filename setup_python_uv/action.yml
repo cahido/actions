@@ -1,9 +1,9 @@
-name: Setup Python with Poetry
-description: Sets up Python, installs Poetry, and installs project dependencies
+name: Setup Python with uv
+description: Sets up Python, installs uv, and installs project dependencies
 
 inputs:
   python-version:
-    description: "Python versie"
+    description: "Python version"
     required: true
 
 runs:
@@ -14,22 +14,21 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Install Poetry
+    - name: Install uv
       shell: bash
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
+        pip install uv
 
     - name: Cache dependencies
       uses: actions/cache@v4
       with:
         path: |
-          ~/.cache/pypoetry
-          ~/.cache/pip
-        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          ~/.cache/uv
+        key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
         restore-keys: |
-          ${{ runner.os }}-poetry-
+          ${{ runner.os }}-uv-
 
     - name: Install Project
       shell: bash
-      run: poetry install --no-interaction --no-ansi --all-extras
+      run: uv sync --all-groups --all-extras --locked

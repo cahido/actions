@@ -26,24 +26,24 @@ jobs:
           submodules: true
           token: ${{ secrets.CI_PAT || github.token }}
 
-      - name: Setup Python & Poetry
-        uses: cahido/actions/setup_python_poetry@main
+      - name: Setup Python & Uv
+        uses: cahido/actions/setup_python_uv@main
         with:
           python-version: ${{ inputs.python-version }}
 
       - name: Check code formatting
-        run: poetry run devtools lint check
+        run: uv run devtools lint check
 
       - name: Cache mypy cache
         uses: actions/cache@v4
         with:
           path: .mypy_cache
-          key: mypy-${{ runner.os }}-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock', '**/pyproject.toml') }}
+          key: mypy-${{ runner.os }}-${{ inputs.python-version }}-${{ hashFiles('**/uv.lock', '**/pyproject.toml') }}
           restore-keys: |
             mypy-${{ runner.os }}-${{ inputs.python-version }}-
 
       - name: Check typing
-        run: poetry run devtools typecheck
+        run: uv run devtools typecheck
 
   test:
     name: Python Tests
@@ -56,10 +56,10 @@ jobs:
           submodules: true
           token: ${{ secrets.CI_PAT || github.token }}
 
-      - name: Setup Python & Poetry
-        uses: cahido/actions/setup_python_poetry@main
+      - name: Setup Python & UV
+        uses: cahido/actions/setup_python_uv@main
         with:
           python-version: ${{ inputs.python-version }}
 
       - name: Run tests
-        run: poetry run pytest
+        run: uv run pytest
