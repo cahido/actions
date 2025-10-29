@@ -16,6 +16,7 @@ runs:
   using: "composite"
   steps:
     - name: Configure SSH
+      shell: bash
       run: |
         mkdir -p ~/.ssh/
         echo "$SSH_KEY" | sed 's/\\n/\n/g' > ~/.ssh/prod.key
@@ -38,16 +39,19 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install dependencies
+      shell: bash
       run: |
         python -m pip install --upgrade pip
         cd wiki
         pip install -r requirements.txt
 
     - name: Build site
+      shell: bash
       run: |
         cd wiki
         mkdocs build
 
     - name: Push files over ssh
+      shell: bash
       run: |
         rsync -avz --delete wiki/site/ prod:/wiki/${{ github.event.repository.name }}/
